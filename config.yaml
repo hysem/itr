@@ -1,0 +1,10 @@
+landlord:
+  name: LandOwnerName
+  address: Address
+  pan: 
+tenant:
+  name: TenantName
+  address: Address
+  pan: 
+financial_year: 2021
+rent: 8000

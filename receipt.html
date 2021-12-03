@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <title>Rent Receipts</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,700;1,300;1,700;&display=swap" rel="stylesheet">
+        <style>
+            
+            @page{
+                size: A4;
+                margin-top: 50px;
+                margin-bottom: 50px;
+            }
+            @media print, screen {
+                body{
+                    font-family: 'Roboto', sans-serif;
+                    margin:0%;
+                    padding:0%;
+                    width: 210mm;
+                    font-weight: 300;
+                    color: rgb(87, 87, 87);
+                }
+                .receipt{
+                    padding: 5mm;
+                    border: 1px dotted rgb(87, 87, 87);
+                    display: flex;
+                    flex-direction: column;
+                    margin:1cm;
+                    page-break-inside: avoid;
+                }               
+
+                .header{
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                }
+                .heading{
+                    font-size: large;
+                }
+                .heading .title{
+                    text-transform: capitalize;
+                }
+                .heading .date{
+                    color: grey ;
+                }
+                .stamp{
+                    text-align: center;
+                    vertical-align: middle;
+                    width: 2cm;
+                    height: 2cm;
+                    border: 1px dotted rgb(87, 87, 87);
+                }
+                .content{
+                    text-align: justify;
+                    margin-top: 5mm;
+                }
+                .footer{
+                    margin-top: 1cm;
+                }
+                .footer .name span{
+                    color: grey;
+                }
+                b{
+                    color: rgb(87, 87, 87);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        {{range $i, $receipt := .}}
+        <div class="receipt"> 
+            <div class="header">
+                <div class="heading">
+                    <span class="title">RENT RECEIPT</span>
+                    <span class="date"><b>{{$receipt.ReceiptDate}}</b></span>
+                </div>
+                <div class="stamp">
+                    Affix Rs. 1 revenue stamp
+                </div>
+                <div>
+                    <div>Receipt No: {{$receipt.ID}}</div>
+                    <div>Date: <b>{{$receipt.StdStartDate}}</b></div>
+                </div>
+            </div>
+            <div class="content">
+                Received sum of <b>Rs.{{$receipt.Amount}}/-</b> from 
+                <b>{{$receipt.Tenant.Name}}</b> towards the rent of property located at 
+                <b>{{$receipt.Landlord.Address}}</b> for the period from <b>{{$receipt.StartDate}}</b> to <b>{{$receipt.EndDate}}</b>.
+            </div>
+            <div class="footer">
+                <div class="name"><b>{{$receipt.Landlord.Name}}</b> <span>(LandLord)</span></div>
+                {{if $receipt.Landlord.PAN}}
+                <div class="pan">PAN: <b>{{$receipt.Landlord.PAN}}</b></div>
+                {{end}}
+            </div>
+            <hr/>
+        </div>
+        {{end}}
+    </body>
+</html>
