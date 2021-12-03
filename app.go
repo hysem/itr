@@ -30,13 +30,14 @@ var (
 )
 
 type Receipt struct {
-	ID        int
-	Tenant    Person
-	Landlord  Person
-	Amount    uint64
-	startDate time.Time
-	endDate   time.Time
-	issueDate time.Time
+	ID            int
+	Tenant        Person
+	Landlord      Person
+	Amount        uint64
+	startDate     time.Time
+	endDate       time.Time
+	issueDate     time.Time
+	IsProvisional bool
 }
 
 func (r *Receipt) StartDate() string {
@@ -74,19 +75,19 @@ func main() {
 	fyStart := time.Date(int(config.FinancialYear), 4, 1, 0, 0, 0, 0, time.Local)
 	var receipts []*Receipt
 	for i := 0; i < 12; i++ {
-		issueDate := fyStart.AddDate(0, i+1, 0)
-		if issueDate.After(time.Now()) {
-			issueDate = time.Now()
-		}
-		receipts = append(receipts, &Receipt{
+		receipt := &Receipt{
 			Tenant:    config.Tenant,
 			Landlord:  config.Landlord,
 			Amount:    config.Rent,
 			ID:        i + 1,
 			startDate: fyStart.AddDate(0, i, 0),
 			endDate:   fyStart.AddDate(0, i+1, -1),
-			issueDate: issueDate,
-		})
+			issueDate: fyStart.AddDate(0, i+1, 0),
+		}
+		if receipt.issueDate.Month() == time.April {
+			receipt.issueDate = receipt.issueDate.AddDate(0, -1, 0)
+		}
+		receipts = append(receipts, receipt)
 	}
 	generatePDF(receipts, config)
 }
