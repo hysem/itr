@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	dateFormat        = "Jan 02 2006"
+	dateFormat        = "Jan 2, 2006"
 	receiptDateFormat = "January 2006"
 	stdDateFormat     = "02-01-2006"
 )
@@ -36,10 +36,14 @@ type Receipt struct {
 	Amount    uint64
 	startDate time.Time
 	endDate   time.Time
+	issueDate time.Time
 }
 
 func (r *Receipt) StartDate() string {
 	return r.startDate.Format(dateFormat)
+}
+func (r *Receipt) IssueDate() string {
+	return r.issueDate.Format(dateFormat)
 }
 
 func (r *Receipt) EndDate() string {
@@ -48,9 +52,6 @@ func (r *Receipt) EndDate() string {
 
 func (r *Receipt) ReceiptDate() string {
 	return r.startDate.Format(receiptDateFormat)
-}
-func (r *Receipt) StdStartDate() string {
-	return r.startDate.Format(stdDateFormat)
 }
 
 func main() {
@@ -73,6 +74,10 @@ func main() {
 	fyStart := time.Date(int(config.FinancialYear), 4, 1, 0, 0, 0, 0, time.Local)
 	var receipts []*Receipt
 	for i := 0; i < 12; i++ {
+		issueDate := fyStart.AddDate(0, i+1, 0)
+		if issueDate.After(time.Now()) {
+			issueDate = time.Now()
+		}
 		receipts = append(receipts, &Receipt{
 			Tenant:    config.Tenant,
 			Landlord:  config.Landlord,
@@ -80,6 +85,7 @@ func main() {
 			ID:        i + 1,
 			startDate: fyStart.AddDate(0, i, 0),
 			endDate:   fyStart.AddDate(0, i+1, -1),
+			issueDate: issueDate,
 		})
 	}
 	generatePDF(receipts, config)
