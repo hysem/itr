@@ -110,7 +110,7 @@ func writeHTML(receipts []*Receipt) http.Handler {
 
 // generatePDF creates a PDF with the given data
 func generatePDF(receipts []*Receipt, config *Config) (string, error) {
-	file := fmt.Sprintf("./rent_receipt_%d.pdf", config.FinancialYear)
+	file := fmt.Sprintf("./e_rent_receipt_%d.pdf", config.FinancialYear)
 	// Convert objects and save the output PDF document.
 	outFile, err := os.Create(file)
 	if err != nil {
